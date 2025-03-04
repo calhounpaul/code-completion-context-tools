@@ -1,60 +1,52 @@
-# Code Analysis Tool
+# Code Completion Context Tools
 
-A combined tool for Python dependency analysis and code abbreviation. This tool can analyze your Python code dependencies and simplify complex code structures by reducing nesting depth.
+This repository provides tools for analyzing Python code dependencies, simplifying complex code structures, and generating summaries using LLMs. It's designed to help developers better understand and maintain their codebases.
 
 ## Features
 
-- **Dependency Analysis**: Analyze Python module dependencies with or without standard library modules.
-- **Code Abbreviation**: Simplify code by abbreviating deeply nested blocks to reduce code complexity.
-- **Database Storage**: All analysis results are stored in a SQLite database for future reference.
-- **Command-line Interface**: Easy-to-use CLI for different analysis tasks.
+- **Dependency Analysis**: Visualize Python module dependencies with or without standard libraries.
+- **Code Simplification**: Reduce code complexity by abbreviating deeply nested blocks.
+- **LLM Integration**: Generate code summaries using Large Language Models (LLMs).
+- **Database Storage**: Store analysis results in a SQLite database for tracking and future reference.
 
-## Installation
+## Quick Start
 
-1. Clone this repository:
-```bash
-git clone <repository-url>
-cd code-analysis-tool
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/calhounpaul/code-completion-context-tools
+   cd code-completion-context-tools
+   ```
 
-2. Run the setup script to create the directory structure:
-```bash
-chmod +x setup_dirs.sh
-./setup_dirs.sh
-```
+2. Set up the environment:
+   ```bash
+   chmod +x setup_dirs.sh
+   ./setup_dirs.sh
+   ```
 
-3. Use the run script to set up the environment and run the tool:
-```bash
-chmod +x run.sh
-./run.sh
-```
-
-The setup script will automatically create a virtual environment, install dependencies, and set up the database.
+3. Install dependencies and run the tool:
+   ```bash
+   chmod +x run.sh
+   ./run.sh
+   ```
 
 ## Usage
 
-The tool provides several commands:
-
 ### Analyze Dependencies
-
 ```bash
 ./run.sh deps path/to/your/script.py [--with-stdlib]
 ```
 
-### Abbreviate Code
-
+### Simplify Code
 ```bash
 ./run.sh abbreviate path/to/your/script.py [--depth N] [--debug]
 ```
 
-### Run All Tests on Sample Code
-
+### Run All Tests
 ```bash
 ./run.sh test [--no-ensure-repo]
 ```
 
-### Database Operations
-
+### View Database
 ```bash
 ./run.sh db --list
 ```
@@ -62,31 +54,28 @@ The tool provides several commands:
 ## Project Structure
 
 ```
-code-analysis-tool/
+code-completion-context-tools/
 ├── app.py                  # Main application
 ├── run.sh                  # Runner script
 ├── setup_dirs.sh           # Directory setup script
-├── requirements.txt        # Python dependencies
-├── schema.sql              # Database schema
-├── data/                   # Data directory
-│   ├── db/                 # Database files
-│   ├── logs/               # Log files
-│   └── output/             # Analysis output files
+├── requirements.txt       # Python dependencies
+├── test.sh                 # Test script
 └── libs/                   # Python library modules
     ├── abbreviator.py      # Code abbreviation module
-    └── pydeps_tools.py     # Dependency analysis module
+    ├── enhance_dependencies.py # Dependency enhancement
+    ├── pydeps_tools.py     # Dependency analysis
+    ├── query_llm.py        # LLM integration
+    ├── schema.sql          # Database schema
+    └── prompts/           # LLM prompt templates
 ```
 
 ## How It Works
 
-### Dependency Analysis
+1. **Dependency Analysis**: Uses `pydeps` to analyze module dependencies.
+2. **Code Simplification**: Uses `libcst` to parse and abbreviate nested code blocks.
+3. **LLM Integration**: Generates code summaries using configured LLM endpoints.
 
-The tool uses the `pydeps` package to analyze Python module dependencies. It can include or exclude standard library modules based on your needs.
+## Requirements
 
-### Code Abbreviation
-
-The code abbreviation feature uses `libcst` to parse a Python file and abbreviate nested code blocks beyond a specified depth, replacing them with ellipsis comments and pass statements. It only abbreviates sections if doing so actually reduces the character count.
-
-## License
-
-[MIT License](LICENSE)
+- Python 3.7+
+- See `requirements.txt` for dependencies
