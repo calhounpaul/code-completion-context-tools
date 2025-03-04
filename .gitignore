@@ -1,0 +1,7 @@
+secrets/
+tmp/
+venv/
+data/
+*.log
+*.pyc
+stdout.txt
