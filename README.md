@@ -77,5 +77,5 @@ code-completion-context-tools/
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.8+
 - See `requirements.txt` for dependencies

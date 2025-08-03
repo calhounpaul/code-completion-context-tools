@@ -21,8 +21,15 @@ def run_pydeps(script_path: str, include_pylib: bool = False) -> Optional[Dict[s
     Returns:
         Dictionary of dependencies or None if error occurred
     """
+    # Check if we're in a virtual environment and use its pydeps
+    venv_pydeps = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "venv", "bin", "pydeps")
+    if os.path.exists(venv_pydeps):
+        pydeps_cmd = venv_pydeps
+    else:
+        pydeps_cmd = "pydeps"
+    
     command = [
-        "pydeps",
+        pydeps_cmd,
         "--show-deps",
         "--no-output",
         script_path
@@ -32,12 +39,24 @@ def run_pydeps(script_path: str, include_pylib: bool = False) -> Optional[Dict[s
 
     try:
         result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        
+        # Check if output is empty or just {}
+        if not result.stdout or result.stdout.strip() == '{}':
+            print(f"Warning: pydeps returned empty output for {script_path}")
+            print(f"This may happen if the script has no analyzable imports or if dependencies are not installed.")
+            # Return a minimal structure with just the script itself
+            script_name = os.path.basename(script_path)
+            return {script_name: {"bacon": 0, "name": script_name, "path": script_path}}
+        
         return json.loads(result.stdout)
     except subprocess.CalledProcessError as e:
         print(f"Error running pydeps: {e.stderr}")
-        return None
-    except json.JSONDecodeError:
-        print("Error parsing JSON output from pydeps.")
+        # Try to provide a minimal response even on error
+        script_name = os.path.basename(script_path)
+        return {script_name: {"bacon": 0, "name": script_name, "path": script_path, "error": str(e)}}
+    except json.JSONDecodeError as e:
+        print(f"Error parsing JSON output from pydeps: {e}")
+        print(f"Output was: {result.stdout[:500]}")  # Show first 500 chars for debugging
         return None
 
 
